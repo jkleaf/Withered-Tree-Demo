@@ -154,7 +154,8 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
                         Log.i("TakePhotoActivity_onActivityResult", "true");
                         bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
 //                        Location location = LocateUtil.exif2Loc(photoPath);
-                        Location location=LocateUtil.getLocFromSys(this);
+//                        Location location=LocateUtil.getLocFromSys(this);
+                        LocateUtil.getLocFromSys(this);
 //                        Log.i("TakePhotoActivity_onActivityResult",bitmap.toString());
 //                        saveBitmapToDir(bitmap);
 //                        bitmap=drawCircleView(bitmap);
@@ -162,10 +163,11 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
 //                            bitmap = ImageUtil.getTranslateImage(bitmap, "119.23586273", "26.086814880");
                             photoImageView.setImageBitmap(bitmap);
                             photoPathTxtView.setText(photoPath);
-                            if (location != null) {
-                                sysLongitude = String.valueOf(location.getLongitude());
-                                sysLatitude = String.valueOf(location.getLatitude());
+                            sysLongitude = String.valueOf(LocateUtil.getLongitude());
+                            sysLatitude = String.valueOf(LocateUtil.getLatitude());
+                            if (null != sysLongitude && null != sysLatitude) {
                                 bitmap=ImageUtil.getTranslateImage(bitmap,sysLongitude,sysLatitude);
+//                                bitmap = ImageUtil.getTranslateImage(bitmap, "151", "89");
                                 lngGetFromImg = ImageUtil.getLng(bitmap);
                                 latGetFromImg = ImageUtil.getLat(bitmap);
                                 longitudeTxtView.setText("经度: " + sysLongitude);
@@ -216,11 +218,11 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void saveBtnClicked(View v) {
-        if(lngGetFromImg!=null&&latGetFromImg!=null) {
-            Toast.makeText(this,lngGetFromImg,Toast.LENGTH_SHORT).show();
-            Toast.makeText(this,latGetFromImg,Toast.LENGTH_SHORT).show();
-            Log.i("----------------------------------lngGetFromImg:----------------------------------",lngGetFromImg);
-            Log.i("----------------------------------latGetFromImg:----------------------------------",latGetFromImg);
+        if (lngGetFromImg != null && latGetFromImg != null) {
+            Toast.makeText(this, lngGetFromImg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, latGetFromImg, Toast.LENGTH_SHORT).show();
+            Log.i("----------------------------------lngGetFromImg:----------------------------------", lngGetFromImg);
+            Log.i("----------------------------------latGetFromImg:----------------------------------", latGetFromImg);
             if (!lngGetFromImg.equals(sysLongitude) || !latGetFromImg.equals(sysLatitude)) {//////////////
                 Snackbar.make(v, "图像处理失败~", Snackbar.LENGTH_SHORT).show();
                 FileUtil.deleteFile(photoPath);//
@@ -237,7 +239,7 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
     private void removeImage(View v) {
         if (photoPath != null) {
             FileUtil.deleteFile(photoPath);
-            Snackbar.make(v,"移除成功!",Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(v, "移除成功!", Snackbar.LENGTH_SHORT).show();
             photoImageView.setImageBitmap(null);
             photoPathTxtView.setText("");
             latitudeTxtView.setText("");

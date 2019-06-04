@@ -10,9 +10,8 @@ public class ImageUtil {
         Bitmap bitmap = bitma.copy(Bitmap.Config.ARGB_8888, true);
         boolean flag_lng = true;
         boolean flag_lat = true;
-        //String Lng= "119.23586273";//-180 -180
-        //String Lat= "26.086814880";//-90~90
-
+        boolean flag_lng_decimal = false;
+        boolean flag_lat_decimal =false;
         int h = bitmap.getHeight();
         if (Lng.indexOf(0) == '-') {
             flag_lng = false;
@@ -23,56 +22,89 @@ public class ImageUtil {
         }
         int n = 0;
         String str1, str2;
-        str1 = Lng.substring(Lng.indexOf(".") + 1);//小数点后
+        if(Lng.indexOf(".")!=-1){
+            flag_lng_decimal=true;
+            str1 = Lng.substring(Lng.indexOf(".") + 1);//小数点后
+        }
+        else
+            str1=null;
+
         while (n < 2) {
             int p = bitmap.getPixel(n, 0);
             int a, r, g, b;
             if (!flag_lng) {
-                str2 = Lng.substring(1, Lng.indexOf("."));//整数部分
+                if(flag_lng_decimal)
+                    str2 = Lng.substring(1, Lng.indexOf("."));//整数部分
+                else str2 =Lng;
                 a = (p >> 24) & 0xff;
                 r = Integer.parseInt(str2);
                 g = 255;
                 b = 255;
                 flag_lng = true;
             } else if (n == 0 && flag_lng) {
-                str2 = Lng.substring(0, Lng.indexOf("."));//整数部分
+                if(flag_lng_decimal)
+                    str2 = Lng.substring(0, Lng.indexOf("."));//整数部分
+                else str2 = Lng;
                 a = (p >> 24) & 0xff;
                 r = Integer.parseInt(str2);
                 g = 0;
                 b = 0;
             } else {
                 a = (p >> 24) & 0xff;
-                r = Integer.parseInt(str1.substring(0, 2));
-                g = Integer.parseInt(str1.substring(2, 4));
-                b = Integer.parseInt(str1.substring(4, 6));
+                if(str1!=null){
+                    r = Integer.parseInt(str1.substring(0, 2));
+                    g = Integer.parseInt(str1.substring(2, 4));
+                    b = Integer.parseInt(str1.substring(4, 6));}
+                else{
+                    r=0;
+                    g=0;
+                    b=0;
+                }
             }
             int rgb = (a << 24) | (r << 16) | (g << 8) | b;
             bitmap.setPixel(n, 0, rgb);
             n++;
         }
         n = 0;
-        str1 = Lat.substring(Lat.indexOf(".") + 1);//小数点后
+        if(Lat.indexOf(".")!=-1) {
+            flag_lat_decimal=true;
+            str1 = Lat.substring(Lat.indexOf(".") + 1);//小数点后
+        }
+        else
+            str1=null;
+
         while (n < 2) {
             int p = bitmap.getPixel(n, bitmap.getHeight() - 1);
             int a, r, g, b;
             if (!flag_lat) {
-                str2 = Lat.substring(1, Lat.indexOf("."));//整数部分
+                if(flag_lat_decimal)
+                    str2 = Lat.substring(1, Lat.indexOf("."));//整数部分
+                else str2=Lat;
                 a = (p >> 24) & 0xff;
                 r = Integer.parseInt(str2);
                 g = 255;
                 b = 255;
                 flag_lat = true;
             } else if (n == 0 && flag_lat) {
-                str2 = Lat.substring(0, Lat.indexOf("."));//整数部分
+                if(flag_lat_decimal)
+                    str2 = Lat.substring(0, Lat.indexOf("."));//整数部分
+                else str2=Lat;
                 a = (p >> 24) & 0xff;
                 r = Integer.parseInt(str2);
                 g = 0;
                 b = 0;
             } else {
                 a = (p >> 24) & 0xff;
-                r = Integer.parseInt(str1.substring(0, 2));
-                g = Integer.parseInt(str1.substring(2, 4));
-                b = Integer.parseInt(str1.substring(4, 6));
+                if(str1!=null) {
+                    r = Integer.parseInt(str1.substring(0, 2));
+                    g = Integer.parseInt(str1.substring(2, 4));
+                    b = Integer.parseInt(str1.substring(4, 6));
+                }
+                else{
+                    r=0;
+                    g=0;
+                    b=0;
+                }
             }
             int rgb = (a << 24) | (r << 16) | (g << 8) | b;
             bitmap.setPixel(n, bitmap.getHeight() - 1, rgb);
@@ -97,7 +129,7 @@ public class ImageUtil {
         r = (p >> 16) & 0xff;
         g = (p >> 8) & 0xff;
         b = p & 0xff;
-        Lng = Lng + "." + r.toString() + g.toString() + b.toString();
+        Lng = Lng + "." + (r>10?r.toString():"0"+r.toString()) + (g>10?g.toString():"0"+g.toString()) + (b>10?b.toString():"0"+b.toString());
         return Lng;
     }
 
@@ -118,7 +150,7 @@ public class ImageUtil {
         r = (p >> 16) & 0xff;
         g = (p >> 8) & 0xff;
         b = p & 0xff;
-        Lat = Lat + "." + r.toString() + g.toString() + b.toString();
+        Lat = Lat + "." + (r>10?r.toString():"0"+r.toString()) + (g>10?g.toString():"0"+g.toString()) + (b>10?b.toString():"0"+b.toString());
         return Lat;
     }
 

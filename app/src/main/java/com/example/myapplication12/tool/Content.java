@@ -8,7 +8,7 @@ public class Content {
 
     public static final String DEMO="demo_";
 
-    public static final String POST_FILE_URL="https://jkleaf.ngrok.xiaomiqiu.cn/WitheredTreesDemo/MutilUpload";
+    public static final String SERVER_URL="https://jkleaf.ngrok.xiaomiqiu.cn/WitheredTreesDemo/";
 
 }
 /***

@@ -32,7 +32,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-import static com.example.myapplication12.tool.Content.POST_FILE_URL;
+import static com.example.myapplication12.tool.Content.SERVER_URL;
 import static com.example.myapplication12.tool.Content.TREEIMG;
 
 public class UploadActivity extends AppCompatActivity {
@@ -48,6 +48,8 @@ public class UploadActivity extends AppCompatActivity {
     private ProgressBar uploadProgressBar;
 
     private TextView uploadTxtView;
+
+    private static final String POST_FILE_URL = SERVER_URL + "MulilUpload";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,7 @@ public class UploadActivity extends AppCompatActivity {
         }
         filesListView = findViewById(R.id.filesListView);
         uploadProgressBar = findViewById(R.id.upload_progress_bar);
-        uploadTxtView=findViewById(R.id.upload_progress_textView);
+        uploadTxtView = findViewById(R.id.upload_progress_textView);
         uploadProgressBar.setVisibility(View.INVISIBLE);
         uploadTxtView.setVisibility(View.INVISIBLE);
     }
@@ -113,7 +115,7 @@ public class UploadActivity extends AppCompatActivity {
         }
     }
 
-    private void showProgressLogs(long bytesWrite, long contentLength, boolean done){
+    private void showProgressLogs(long bytesWrite, long contentLength, boolean done) {
         Log.i("TAG", "bytesWrite:" + bytesWrite);
         Log.i("TAG", "contentLength" + contentLength);
         Log.i("TAG", (100 * bytesWrite) / contentLength + " % done ");
@@ -125,14 +127,14 @@ public class UploadActivity extends AppCompatActivity {
         final ProgressListener progressListener = new ProgressListener() {
             @Override
             public void onProgress(long bytesWrite, long contentLength, boolean done) {
-                showProgressLogs(bytesWrite,contentLength,done);
+                showProgressLogs(bytesWrite, contentLength, done);
             }
         };
 
         UIProgressListener uiProgressRequestListener = new UIProgressListener() {
             @Override
             public void onUIProgress(long bytesWrite, long contentLength, boolean done) {
-                showProgressLogs(bytesWrite,contentLength,done);
+                showProgressLogs(bytesWrite, contentLength, done);
                 int progress = (int) ((100 * bytesWrite) / contentLength);
                 uploadProgressBar.setProgress(progress);
                 uploadTxtView.setText("上传进度值：" + progress + "%");
@@ -181,7 +183,7 @@ public class UploadActivity extends AppCompatActivity {
         List<String> filesPathNames = new ArrayList<>();
         for (String fileName : filesList) {
             filesPathNames.add(PHOTO_DIR_PATH + File.separator + fileName);
-            Log.i("---------initUploadFile----------", PHOTO_DIR_PATH + File.separator + fileName);
+//            Log.i("---------initUploadFile----------", PHOTO_DIR_PATH + File.separator + fileName);
         }
         return filesPathNames;
     }
