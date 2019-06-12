@@ -2,12 +2,10 @@ package com.example.myapplication12.function.camera;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -25,7 +23,6 @@ import android.widget.Toast;
 import com.example.myapplication12.R;
 import com.example.myapplication12.tool.DialogUtil;
 import com.example.myapplication12.tool.FileUtil;
-import com.example.myapplication12.tool.ImageUtil;
 import com.example.myapplication12.tool.LocateUtil;
 import com.example.myapplication12.tool.PermissonUtil;
 
@@ -46,6 +43,8 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
     private Uri imageUri;
 
     private boolean imgDirFlag;
+
+    private boolean isSaved;
 
     private ImageView photoImageView;
     private TextView longitudeTxtView;
@@ -98,10 +97,19 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                if(!isSaved)
+                    FileUtil.deleteFile(photoPath);
                 this.finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(!isSaved)
+            FileUtil.deleteFile(photoPath);
+        super.onBackPressed();
     }
 
     @Override
@@ -164,12 +172,13 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
                             photoImageView.setImageBitmap(bitmap);
                             photoPathTxtView.setText(photoPath);
                             sysLongitude = String.valueOf(LocateUtil.getLongitude());
-                            sysLatitude = String.valueOf(LocateUtil.getLatitude());
-                            if (null != sysLongitude && null != sysLatitude) {
-                                bitmap=ImageUtil.getTranslateImage(bitmap,sysLongitude,sysLatitude);
+                            sysLatitude = String.valueOf(LocateUtil.getLatitude());//String.valueOf返回字符串"null"
+                            if ("null" != sysLongitude && "null" != sysLatitude) {
+                                Log.i("----------TAG----------",sysLongitude+" "+sysLatitude);
+                                bitmap=ImageHandler.getTranslateImage(bitmap,sysLongitude,sysLatitude);
 //                                bitmap = ImageUtil.getTranslateImage(bitmap, "151", "89");
-                                lngGetFromImg = ImageUtil.getLng(bitmap);
-                                latGetFromImg = ImageUtil.getLat(bitmap);
+                                lngGetFromImg = ImageHandler.getLng(bitmap);
+                                latGetFromImg = ImageHandler.getLat(bitmap);
                                 longitudeTxtView.setText("经度: " + sysLongitude);
                                 latitudeTxtView.setText("纬度: " + sysLatitude);
                             } else {
@@ -219,16 +228,17 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
 
     private void saveBtnClicked(View v) {
         if (lngGetFromImg != null && latGetFromImg != null) {
-            Toast.makeText(this, lngGetFromImg, Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, latGetFromImg, Toast.LENGTH_SHORT).show();
             Log.i("----------------------------------lngGetFromImg:----------------------------------", lngGetFromImg);
             Log.i("----------------------------------latGetFromImg:----------------------------------", latGetFromImg);
             if (!lngGetFromImg.equals(sysLongitude) || !latGetFromImg.equals(sysLatitude)) {//////////////
                 Snackbar.make(v, "图像处理失败~", Snackbar.LENGTH_SHORT).show();
-                FileUtil.deleteFile(photoPath);//
+//                FileUtil.deleteFile(photoPath);//
             } else {
                 Snackbar.make(v, "图像处理成功!已保存~", Snackbar.LENGTH_SHORT).show();
+                isSaved=true;
             }
+        } else {
+            Toast.makeText(this, "无法获取经纬度~", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -250,7 +260,7 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
     private void saveBitmapToDir(Bitmap bitmap) {
         File file = new File(photoPath);
         try (FileOutputStream fos = new FileOutputStream(file)) {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
         } catch (Exception e) {
             e.printStackTrace();

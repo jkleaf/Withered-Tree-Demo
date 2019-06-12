@@ -8,7 +8,6 @@ import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.List;
@@ -72,28 +71,52 @@ public class LocateUtil {
             Log.i("TAG", "GPS定位");
             locationProvider = LocationManager.GPS_PROVIDER;
         }
-        Location location = locationManager.getLastKnownLocation(locationProvider);
-        updateNewLocation(location);
-        locationManager.requestLocationUpdates(locationProvider, 0, 0, new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                updateNewLocation(location);
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-            }
-        });
-
+        if(null!=locationProvider) {
+            Location location = locationManager.getLastKnownLocation(locationProvider);
+            updateNewLocation(location);
+            locationManager.requestLocationUpdates(locationProvider,0,0,locationListener);
+//            locationManager.requestLocationUpdates(locationProvider, 0, 0, new LocationListener() {
+//                @Override
+//                public void onLocationChanged(Location location) {
+//                    updateNewLocation(location);
+//                }
+//
+//                @Override
+//                public void onStatusChanged(String provider, int status, Bundle extras) {
+//                }
+//
+//                @Override
+//                public void onProviderEnabled(String provider) {
+//                }
+//
+//                @Override
+//                public void onProviderDisabled(String provider) {
+//                }
+//            });
+        }
     }
+
+   private static LocationListener locationListener=new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            updateNewLocation(location);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
 
     private static void updateNewLocation(Location location){
         if(null!=location){
