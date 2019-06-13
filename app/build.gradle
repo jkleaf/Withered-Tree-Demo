@@ -26,7 +26,10 @@ dependencies {
 //    implementation 'com.squareup.picasso:picasso:2.71828' //image engine
     implementation 'ru.bartwell:exfilepicker:2.1' //ExFilePicker
 //    implementation 'com.squareup.okhttp3:okhttp:3.5.0'
-    implementation 'com.github.zhouxu88:OkHttp3_MultiFile:v1.0'
+    implementation 'com.github.zhouxu88:OkHttp3_MultiFile:v1.0'//OKHttp3
+    implementation 'id.zelory:compressor:2.1.0'//Compressor
+    implementation 'com.android.support:support-annotations:28.0.0'
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

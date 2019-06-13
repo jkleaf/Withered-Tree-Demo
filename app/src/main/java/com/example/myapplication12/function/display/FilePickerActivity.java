@@ -116,7 +116,7 @@ public class FilePickerActivity extends AppCompatActivity implements View.OnClic
                         String path = result.getPath();
                         List<String> names = result.getNames();
                         for (int i = 0; i < names.size(); i++) {
-                            File f = new File(path, names.get(i));
+//                            File f = new File(path, names.get(i));
                             try {
 //                            Uri uri = Uri.fromFile(f);
 //                            Toast.makeText(this, "选择文件:" + uri.getPath(), Toast.LENGTH_SHORT)

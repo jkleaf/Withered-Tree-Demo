@@ -23,12 +23,15 @@ import android.widget.Toast;
 import com.example.myapplication12.R;
 import com.example.myapplication12.tool.DialogUtil;
 import com.example.myapplication12.tool.FileUtil;
+import com.example.myapplication12.tool.ImageUtil;
 import com.example.myapplication12.tool.LocateUtil;
 import com.example.myapplication12.tool.PermissonUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.text.DecimalFormat;
 
 import static com.example.myapplication12.tool.Content.*;
 
@@ -141,7 +144,7 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
             imgDirFlag = true;
         }
         photoPath = FileUtil.getPhotoPathName();
-        imageUri = Uri.fromFile(new File(photoPath));
+        imageUri = Uri.fromFile(new File(photoPath));///no use
         intentToTakePhoto.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intentToTakePhoto, CAMERA_REQUEST_CODE);
     }
@@ -155,12 +158,13 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode == TakePhotoActivity.RESULT_OK) {//
-            Log.i("TakePhotoActivity_onActivityResult", "--------------------------Fuck Here--------------------------");
+            Log.i("TakePhotoActivity_onActivityResult", "--------------------------Enter Here--------------------------");
             switch (requestCode) {
                 case CAMERA_REQUEST_CODE:
                     try {
                         Log.i("TakePhotoActivity_onActivityResult", "true");
-                        bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+//                        bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                        bitmap= ImageUtil.getCompressBitmap(this,new File(photoPath));
 //                        Location location = LocateUtil.exif2Loc(photoPath);
 //                        Location location=LocateUtil.getLocFromSys(this);
                         LocateUtil.getLocFromSys(this);
@@ -176,7 +180,7 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
                             if ("null" != sysLongitude && "null" != sysLatitude) {
                                 Log.i("----------TAG----------",sysLongitude+" "+sysLatitude);
                                 bitmap=ImageHandler.getTranslateImage(bitmap,sysLongitude,sysLatitude);
-//                                bitmap = ImageUtil.getTranslateImage(bitmap, "151", "89");
+//                                bitmap = ImageHandler.getTranslateImage(bitmap, "151.45153", "89.4545");
                                 lngGetFromImg = ImageHandler.getLng(bitmap);
                                 latGetFromImg = ImageHandler.getLat(bitmap);
                                 longitudeTxtView.setText("经度: " + sysLongitude);
@@ -185,7 +189,7 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
                                 Toast.makeText(this, "无法获取经纬度~", Toast.LENGTH_LONG).show();
                             }
                         }
-                    } catch (FileNotFoundException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     break;
@@ -222,7 +226,7 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
 //        return bm;
 //    }
 
-    private void saveImageInfoToDir() {//Image Info to Text
+    private void saveImageInfoToDir() {//Image Info to Textadb
 
     }
 
@@ -230,16 +234,32 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
         if (lngGetFromImg != null && latGetFromImg != null) {
             Log.i("----------------------------------lngGetFromImg:----------------------------------", lngGetFromImg);
             Log.i("----------------------------------latGetFromImg:----------------------------------", latGetFromImg);
-            if (!lngGetFromImg.equals(sysLongitude) || !latGetFromImg.equals(sysLatitude)) {//////////////
+            if (!lngGetFromImg.equals(zeroize(sysLongitude)) || !latGetFromImg.equals(zeroize(sysLatitude))) {//////////////
                 Snackbar.make(v, "图像处理失败~", Snackbar.LENGTH_SHORT).show();
 //                FileUtil.deleteFile(photoPath);//
             } else {
+                saveBitmapToDir();//
                 Snackbar.make(v, "图像处理成功!已保存~", Snackbar.LENGTH_SHORT).show();
+                /*******/
+                try {
+                    Bitmap bitmapTmp=BitmapFactory.decodeStream(new FileInputStream(photoPath));
+                    if(bitmapTmp!=null) {
+                        longitudeTxtView.setText(ImageHandler.getLng(bitmapTmp));
+                        latitudeTxtView.setText(ImageHandler.getLat(bitmapTmp));
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                /******/
                 isSaved=true;
             }
         } else {
             Toast.makeText(this, "无法获取经纬度~", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private String zeroize(String doubleStr){
+        return new DecimalFormat("0.000000").format(Double.parseDouble(doubleStr));
     }
 
     private void removeBtnClicked(View v) {
@@ -257,10 +277,10 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void saveBitmapToDir(Bitmap bitmap) {
+    private void saveBitmapToDir() {
         File file = new File(photoPath);
         try (FileOutputStream fos = new FileOutputStream(file)) {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.flush();
         } catch (Exception e) {
             e.printStackTrace();

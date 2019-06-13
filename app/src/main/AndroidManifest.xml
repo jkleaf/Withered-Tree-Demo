@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -17,9 +17,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".function.display.FileBrowseActivity"></activity>
-        <activity android:name=".function.display.FilePickerActivity"
-                  android:label="@string/title_activity_filepicker"/>
+        <activity android:name=".function.login.LoginActivity"></activity>
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:label="@string/title_activity_login" />
+        <activity android:name=".function.display.FileBrowseActivity" />
+        <activity
+            android:name=".function.display.FilePickerActivity"
+            android:label="@string/title_activity_filepicker" />
         <activity
             android:name=".function.upload.UploadActivity"
             android:label="@string/title_activity_upload"
@@ -37,10 +42,6 @@
         <activity
             android:name=".function.camera.TakePhotoActivity"
             android:label="@string/title_activity_takephoto" />
-        <!--<activity-->
-            <!--android:name="ru.bartwell.exfilepicker.ui.activity.ExFilePickerActivity"-->
-            <!--android:theme="@style/ExFilePickerThemeDark"-->
-            <!--tools:replace="android:theme"/>-->
     </application>
 
 </manifest>

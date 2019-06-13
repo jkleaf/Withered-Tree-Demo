@@ -11,6 +11,7 @@ public class ImageHandler {
         boolean flag_lat = true;
         boolean flag_lng_decimal = false;
         boolean flag_lat_decimal = false;
+
         int h = bitmap.getHeight();
         if (Lng.indexOf(0) == '-') {
             flag_lng = false;
@@ -24,6 +25,10 @@ public class ImageHandler {
         if (Lng.indexOf(".") != -1) {
             flag_lng_decimal = true;
             str1 = Lng.substring(Lng.indexOf(".") + 1);//小数点后
+            while (str1.length() < 6) {
+                str1 = str1 + "0";
+            }
+
         } else
             str1 = null;
 
@@ -67,6 +72,9 @@ public class ImageHandler {
         if (Lat.indexOf(".") != -1) {
             flag_lat_decimal = true;
             str1 = Lat.substring(Lat.indexOf(".") + 1);//小数点后
+            while (str1.length() < 6) {
+                str1 = str1 + "0";
+            }
         } else
             str1 = null;
 

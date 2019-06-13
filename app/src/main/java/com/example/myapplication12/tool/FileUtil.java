@@ -42,12 +42,12 @@ public class FileUtil {
 
     public static String setFileNameWithDate(String fileName) {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String imageFileName = "PNG_" + timeStamp + "_";//PNG无损
         return imageFileName + fileName;
     }
 
     public static String getPhotoPathName(){
-        return getFilePath(TREEIMG) + File.separator + setFileNameWithDate(TREEIMG) + ".jpg";
+        return getFilePath(TREEIMG) + File.separator + setFileNameWithDate(TREEIMG) + ".png";
     }
 
     public static void deleteFile(String pathName){

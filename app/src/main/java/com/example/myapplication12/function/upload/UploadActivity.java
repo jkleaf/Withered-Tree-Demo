@@ -52,7 +52,7 @@ public class UploadActivity extends AppCompatActivity {
 
     private TextView uploadTxtView;
 
-    private static final String POST_FILE_URL = SERVER_URL + "MutilUpload";
+    private static final String POST_FILE_URL = SERVER_URL + "MultiUpload";
 
     private HttpStatus status;
 
@@ -93,11 +93,7 @@ public class UploadActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (filesList != null) {///////////////////
-                    filesList.clear();
-                    filesArrayAdapter.clear();
-                    filesListView.setAdapter(filesArrayAdapter);
-                }
+                clearListView();
                 this.finish();
                 return true;
             case R.id.uploadItem:
@@ -108,8 +104,17 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {///////////////////
+    public void onBackPressed() {
+        clearListView();
         super.onBackPressed();
+    }
+
+    private void clearListView() {
+        if (filesList != null) {///////////////////
+            filesList.clear();
+            filesArrayAdapter.clear();
+            filesListView.setAdapter(null);
+        }
     }
 
     private void showListView() {
@@ -124,7 +129,7 @@ public class UploadActivity extends AppCompatActivity {
             Toast.makeText(this, "当前设备网络不可用~", Toast.LENGTH_LONG).show();
         } else {
 //            new LoadingController(this).execute(Integer.valueOf(0));
-            Thread checkStatusThread=new Thread(new Runnable() {
+            Thread checkStatusThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     status = new OkHttpUtil(SERVER_URL).doGet();
@@ -133,20 +138,26 @@ public class UploadActivity extends AppCompatActivity {
                         canUpload = true;
                     } else {
                         canUpload = false;
-                        Looper.prepare();//线程中使用Toast
-                        Toast.makeText(UploadActivity.this, "无法上传~响应码：" + status.getStatus(), Toast.LENGTH_SHORT).show();
-                        Looper.loop();
+//                        Looper.prepare();
+//                        Toast.makeText(UploadActivity.this, "无法上传~响应码：" + status.getStatus(), Toast.LENGTH_SHORT).show();
+//                        Looper.loop();
                     }
                 }
             });
             checkStatusThread.start();
             try {
                 checkStatusThread.join();//wait!!!!
+//                synchronized (Thread.currentThread()){
+//                    Thread.currentThread().wait();
+//                }
+                Log.i("TAG",String.valueOf(canUpload));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             if (canUpload) {
                 upload();
+            } else {
+                Toast.makeText(UploadActivity.this, "无法上传~响应码：" + status.getStatus(), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -202,7 +213,7 @@ public class UploadActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {////////////////////////////////
-                        Toast.makeText(UploadActivity.this, "上传失败" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UploadActivity.this, "上传失败~异常中断" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
