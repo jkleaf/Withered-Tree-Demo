@@ -1,5 +1,7 @@
 package com.example.myapplication12.main;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
@@ -13,23 +15,63 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication12.R;
+import com.example.myapplication12.bean.User;
 import com.example.myapplication12.controller.LoadingController;
 import com.example.myapplication12.function.camera.TakePhotoActivity;
 import com.example.myapplication12.function.display.FilePickerActivity;
+import com.example.myapplication12.tool.DialogUtil;
 import com.example.myapplication12.tool.FileUtil;
 import com.example.myapplication12.tool.IntentUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, View.OnLongClickListener {
+
+    private TextView usernameTextView;
+
+    private TextView accountTextView;
+
+    private TextView loginDurationTextView;
+
+    private TextView lastLoginTextView;
+
+    private TextView takenPhotosTextView;
+
+    private TextView usernameNavTextView;
+
+    private TextView emailTextView;
+
+    private Button logoutBtn;
+
+    private Dialog logoutDialog;
+
+    private User user;
+
+    private Timer timer;
+
+    private TimerTask timerTask;
+
+    private static int secondsCount = 0;
+
+    private SimpleDateFormat sdf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        user = (User) getIntent().getSerializableExtra("user");
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -41,7 +83,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -50,6 +92,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        initElements();
+        initClickListener();
+        showUserInfo();
+        runTimer();
         ///////////////////////////////////////////////////////
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -57,6 +103,52 @@ public class MainActivity extends AppCompatActivity
 //        TakePhotoActivity.setRootPath(this);
 //        takePhoto=new TakePhotoActivity(MainActivity.this);
         FileUtil.setRootPath(this);
+    }
+
+    private void initElements() {
+        usernameTextView = findViewById(R.id.username_textview);
+        accountTextView = findViewById(R.id.account_textview);
+        loginDurationTextView = findViewById(R.id.login_duration_textview);
+        lastLoginTextView = findViewById(R.id.last_login_textview);
+        takenPhotosTextView = findViewById(R.id.taken_photos_amounts_textview);
+        usernameNavTextView = findViewById(R.id.username_nav_textview);
+        emailTextView = findViewById(R.id.email_nav_textview);
+        logoutBtn = findViewById(R.id.logout_btn);
+        sdf = new SimpleDateFormat("HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));//时区
+    }
+
+    private void initClickListener() {
+        logoutBtn.setOnClickListener(this);
+    }
+
+    private void showUserInfo() {
+        usernameTextView.setText(user.getUsername());
+        accountTextView.setText(user.getAccount());
+//        usernameNavTextView.setText(user.getUsername());
+//        emailTextView.setText(user.getEmail());
+    }
+
+    private String getTime() {
+        return sdf.format(1000 * (secondsCount++));
+    }
+
+    private void runTimer() {
+        if (timer == null && timerTask == null) {
+            timer = new Timer();
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loginDurationTextView.setText(getTime());
+                        }
+                    });
+                }
+            };
+            timer.schedule(timerTask, 0, 1000);
+        }
     }
 
     @Override
@@ -71,19 +163,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -94,11 +182,9 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
             navCameraSelected();
         } else if (id == R.id.nav_gallery) {
             navGallerySelected();
@@ -121,7 +207,30 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.logout_btn:
+                logoutBtnClicked();
+                break;
+        }
+    }
 
+    private void logoutBtnClicked() {
+        showLogoutDialog();
+    }
+
+    private void showLogoutDialog() {//invalidate session or exit(0)
+        logoutDialog = DialogUtil.showNormalDialog(this, "退出", "确定要退出吗？", "确定", "取消"
+                , new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        System.exit(0);//
+                    }
+                }, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        logoutDialog.show();
     }
 
     @Override
@@ -129,13 +238,13 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
-    private void navCameraSelected(){
+    private void navCameraSelected() {
 //        Bundle bundle=new Bundle();
 //        bundle.putString("pageTitle",CAMERATITLE);
-        IntentUtil.sendIntent(MainActivity.this,TakePhotoActivity.class);
+        IntentUtil.sendIntent(MainActivity.this, TakePhotoActivity.class);
     }
 
-    private void navGallerySelected(){
+    private void navGallerySelected() {
         IntentUtil.sendIntent(MainActivity.this, FilePickerActivity.class);
     }
 

@@ -6,6 +6,7 @@ import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class OkHttpUtil {
@@ -16,22 +17,24 @@ public class OkHttpUtil {
 //
     private String urlString;
 
+    private HttpUrl.Builder urlBuilder;
+
 //    private HashMap<String,String> params;
 //
 //    private HashMap<String,String> headers;
 
     public OkHttpUtil(String urlString){
         this.urlString=urlString;
+        urlBuilder =HttpUrl.parse(urlString).newBuilder();
     }
 
     public HttpStatus doGet(){
-        HttpUrl.Builder urlBuilder =HttpUrl.parse(urlString).newBuilder();
         Request request=new Request.Builder()
                 .url(urlBuilder.build())
                 .get()
                 .build();
-        Call call=new OkHttpClient().newCall(request);
         try {
+            Call call=new OkHttpClient().newCall(request);
             Response response=call.execute();
             return new HttpStatus(response.code(),response.body().string());
         } catch (IOException e) {
@@ -39,8 +42,17 @@ public class OkHttpUtil {
         }
     }
 
-    public void doPost(){
-
+    public HttpStatus doPost(RequestBody body){
+        Request request=new Request.Builder()
+                .url(urlBuilder.build())
+                .post(body)
+                .build();
+        try {
+            Response response= new OkHttpClient().newCall(request).execute();
+            return new HttpStatus(response.code(),response.body().string());
+        } catch (IOException e) {
+            return new HttpStatus(-1,e.getMessage());
+        }
     }
 
 }

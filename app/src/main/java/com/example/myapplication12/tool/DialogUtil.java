@@ -20,4 +20,16 @@ public class DialogUtil {
         return normalDialog;
     }
 
+    public static Dialog showNormalDialog(Context context, String title, String message,
+                                          String positiveBtnName,OnClickListener positiveBtnListener) {
+        Dialog normalDialog=null;
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//        normalDialog.setIcon(R.drawable.icon_dialog);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton(positiveBtnName,positiveBtnListener);
+        normalDialog=builder.create();
+        return normalDialog;
+    }
+
 }

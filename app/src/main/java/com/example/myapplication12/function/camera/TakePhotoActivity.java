@@ -50,12 +50,12 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
     private boolean isSaved;
 
     private ImageView photoImageView;
+
     private TextView longitudeTxtView;
     private TextView latitudeTxtView;
     private TextView photoPathTxtView;
     private Button saveBtn;
     private Button removeBtn;
-
     private Bitmap bitmap;
 
     private Dialog dialog;
@@ -241,15 +241,15 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
                 saveBitmapToDir();//
                 Snackbar.make(v, "图像处理成功!已保存~", Snackbar.LENGTH_SHORT).show();
                 /*******/
-                try {
-                    Bitmap bitmapTmp=BitmapFactory.decodeStream(new FileInputStream(photoPath));
-                    if(bitmapTmp!=null) {
-                        longitudeTxtView.setText(ImageHandler.getLng(bitmapTmp));
-                        latitudeTxtView.setText(ImageHandler.getLat(bitmapTmp));
-                    }
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Bitmap bitmapTmp=BitmapFactory.decodeStream(new FileInputStream(photoPath));
+//                    if(bitmapTmp!=null) {
+//                        longitudeTxtView.setText(ImageHandler.getLng(bitmapTmp));
+//                        latitudeTxtView.setText(ImageHandler.getLat(bitmapTmp));
+//                    }
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                }
                 /******/
                 isSaved=true;
             }
