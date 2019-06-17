@@ -2,13 +2,14 @@ package com.example.myapplication12.function.login;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.myapplication12.R;
@@ -17,6 +18,7 @@ import com.example.myapplication12.main.MainActivity;
 import com.example.myapplication12.tool.DialogUtil;
 import com.example.myapplication12.tool.HttpStatus;
 import com.example.myapplication12.tool.IntentUtil;
+import com.example.myapplication12.tool.NetWorkUtil;
 import com.example.myapplication12.tool.OkHttpUtil;
 
 import org.json.JSONException;
@@ -48,14 +50,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private User user;
 
-    /*******/
     private Button login_btn;
 
     private EditText account_editText;
 
     private EditText pwd_editText;
 
-    /******/
+    private ImageView pwd_see_imageView;
+
+//    private LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +73,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         login_btn=findViewById(R.id.btn_login);
         account_editText=findViewById(R.id.et_account);
         pwd_editText=findViewById(R.id.et_password);
+        pwd_see_imageView=findViewById(R.id.iv_see_password);
     }
 
     private void initClickListener(){
         login_btn.setOnClickListener(this);
+        pwd_see_imageView.setOnClickListener(this);
     }
 
     @Override
@@ -81,6 +86,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()){
             case R.id.btn_login:
                 login();
+                break;
+            case R.id.iv_see_password:
+                setPasswordVisibility();
                 break;
         }
     }
@@ -93,12 +101,35 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return pwd_editText.getText().toString().trim();
     }
 
+    private void setPasswordVisibility(){
+        if(pwd_see_imageView.isSelected()){
+            pwd_see_imageView.setSelected(false);
+            pwd_editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }else{
+            pwd_see_imageView.setSelected(true);
+            pwd_editText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        }
+    }
+
     private void login() {
+        if(!NetWorkUtil.isNetworkConnected(this)){
+            Toast.makeText(this,"设备的网络不可用~",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(getAccount().isEmpty()){
+            Toast.makeText(this,"输入的账号不能为空!",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(getPassword().isEmpty()){
+            Toast.makeText(this,"输入的密码不能为空!",Toast.LENGTH_SHORT).show();
+            return;
+        }
         Thread checkStatusThread=new Thread(new Runnable() {
             @Override
             public void run() {
                 postJson=createLoginJSON(getAccount(),getPassword());
                 RequestBody body = RequestBody.create(JSON, postJson);
+
                 status = new OkHttpUtil(POST_LOGIN_PARAMS_URL).doPost(body);
                 returnJson=status.getResponseAns();
                 Log.i("TAG-login",status.getStatus()+" "+returnJson);

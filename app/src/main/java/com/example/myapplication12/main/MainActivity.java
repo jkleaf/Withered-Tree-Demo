@@ -1,5 +1,6 @@
 package com.example.myapplication12.main;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -35,6 +36,10 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, View.OnLongClickListener {
+
+    private View nav_header;
+
+    private NavigationView navigationView;
 
     private TextView usernameTextView;
 
@@ -89,7 +94,7 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         initElements();
@@ -111,8 +116,11 @@ public class MainActivity extends AppCompatActivity
         loginDurationTextView = findViewById(R.id.login_duration_textview);
         lastLoginTextView = findViewById(R.id.last_login_textview);
         takenPhotosTextView = findViewById(R.id.taken_photos_amounts_textview);
-        usernameNavTextView = findViewById(R.id.username_nav_textview);
-        emailTextView = findViewById(R.id.email_nav_textview);
+        if(navigationView.getHeaderCount()>0){//防止重复
+            nav_header=navigationView.getHeaderView(0);
+            usernameNavTextView=nav_header.findViewById(R.id.username_nav_textview);
+            emailTextView = nav_header.findViewById(R.id.email_nav_textview);
+        }
         logoutBtn = findViewById(R.id.logout_btn);
         sdf = new SimpleDateFormat("HH:mm:ss");
         sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));//时区
@@ -125,8 +133,8 @@ public class MainActivity extends AppCompatActivity
     private void showUserInfo() {
         usernameTextView.setText(user.getUsername());
         accountTextView.setText(user.getAccount());
-//        usernameNavTextView.setText(user.getUsername());
-//        emailTextView.setText(user.getEmail());
+        usernameNavTextView.setText(user.getUsername());
+        emailTextView.setText(user.getEmail());
     }
 
     private String getTime() {
@@ -200,7 +208,7 @@ public class MainActivity extends AppCompatActivity
             loadingView.execute(Integer.valueOf(0));
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

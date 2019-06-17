@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.myapplication12.R;
 import com.example.myapplication12.bean.TreeImage;
 import com.example.myapplication12.controller.LoadingController;
+import com.example.myapplication12.function.display.FilePickerActivity;
 import com.example.myapplication12.tool.FileUtil;
 import com.example.myapplication12.tool.HttpStatus;
 import com.example.myapplication12.tool.NetWorkUtil;
@@ -110,10 +111,13 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     private void clearListView() {
-        if (filesList != null) {///////////////////
-            filesList.clear();
-            filesArrayAdapter.clear();
-            filesListView.setAdapter(null);
+        if (filesList != null) {
+//            filesList.clear();
+//            filesArrayAdapter.clear();
+//            filesArrayAdapter.notifyDataSetChanged();
+//            filesListView.setAdapter(filesArrayAdapter);
+//            filesListView.setAdapter(null);
+            FilePickerActivity.filesList.clear();
         }
     }
 

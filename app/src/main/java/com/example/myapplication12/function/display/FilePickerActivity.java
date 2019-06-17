@@ -38,7 +38,7 @@ public class FilePickerActivity extends AppCompatActivity implements View.OnClic
 
     private String startDir;
 
-    private ArrayList<String> filesList;
+    public static ArrayList<String> filesList;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
