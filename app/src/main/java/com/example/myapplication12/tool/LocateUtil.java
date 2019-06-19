@@ -71,10 +71,10 @@ public class LocateUtil {
             Log.i("TAG", "GPS定位");
             locationProvider = LocationManager.GPS_PROVIDER;
         }
-        if(null!=locationProvider) {
+        if (null != locationProvider) {
             Location location = locationManager.getLastKnownLocation(locationProvider);
             updateNewLocation(location);
-            locationManager.requestLocationUpdates(locationProvider,0,0,locationListener);
+            locationManager.requestLocationUpdates(locationProvider, 0, 0, locationListener);
 //            locationManager.requestLocationUpdates(locationProvider, 0, 0, new LocationListener() {
 //                @Override
 //                public void onLocationChanged(Location location) {
@@ -96,7 +96,7 @@ public class LocateUtil {
         }
     }
 
-   private static LocationListener locationListener=new LocationListener() {
+    private static LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             updateNewLocation(location);
@@ -118,20 +118,28 @@ public class LocateUtil {
         }
     };
 
-    private static void updateNewLocation(Location location){
-        if(null!=location){
+    private static void updateNewLocation(Location location) {
+        if (null != location) {
             location.getAccuracy();
-            longitude=location.getLongitude();
-            latitude=location.getLatitude();
+            longitude = location.getLongitude();
+            latitude = location.getLatitude();
+            double[] locations = GPSUtil.transform(latitude, longitude);
+            longitude = retain6(locations[1]);
+            latitude = retain6(locations[0]);
         }
     }
 
-    public static Double getLongitude(){
+    public static Double getLongitude() {
         return longitude;
     }
 
-    public static Double getLatitude(){
+    public static Double getLatitude() {
         return latitude;
+    }
+
+    private static double retain6(double num) {
+        String result = String.format("%.6f", num);
+        return Double.valueOf(result);
     }
 
 }

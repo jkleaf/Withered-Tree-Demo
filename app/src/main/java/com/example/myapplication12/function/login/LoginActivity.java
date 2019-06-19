@@ -25,7 +25,6 @@ import com.example.myapplication12.tool.OkHttpUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 import static com.example.myapplication12.tool.Content.SERVER_URL;
