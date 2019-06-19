@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication12.R;
+import com.example.myapplication12.main.MainActivity;
 import com.example.myapplication12.tool.DialogUtil;
 import com.example.myapplication12.tool.FileUtil;
 import com.example.myapplication12.tool.ImageUtil;
@@ -240,6 +241,7 @@ public class TakePhotoActivity extends AppCompatActivity implements View.OnClick
             } else {
                 saveBitmapToDir();//
                 Snackbar.make(v, "图像处理成功!已保存~", Snackbar.LENGTH_SHORT).show();
+                MainActivity.takenAmountsTextView.setText(""+(++MainActivity.takenAmounts));//
                 /*******/
 //                try {
 //                    Bitmap bitmapTmp=BitmapFactory.decodeStream(new FileInputStream(photoPath));

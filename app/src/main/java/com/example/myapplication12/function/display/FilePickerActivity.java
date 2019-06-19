@@ -17,7 +17,6 @@ import com.example.myapplication12.function.upload.UploadActivity;
 import com.example.myapplication12.tool.FileUtil;
 import com.example.myapplication12.tool.IntentUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 

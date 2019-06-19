@@ -81,8 +81,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/margin_tiny"
             android:layout_marginLeft="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_tiny"
             android:layout_toRightOf="@+id/img_pw"
             android:background="@null"
             android:hint="@string/password"
@@ -90,23 +90,25 @@
             android:maxLines="1"
             android:textColor="@android:color/black"
             android:textColorHint="@color/tv_gray_deep"
-            android:textSize="@dimen/text_size_normal"/>
+            android:textSize="@dimen/text_size_normal" />
+
         <ImageView
             android:id="@+id/iv_see_password"
             android:layout_width="@dimen/image_height_litter"
             android:layout_height="@dimen/image_height_litter"
-            android:src="@drawable/image_password_bg"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:scaleType="fitXY"
-            />
+            android:src="@drawable/image_password_bg" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/line_height"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="@dimen/margin_normal"
+            android:layout_marginLeft="12dp"
+            android:layout_marginBottom="4dp"
             android:layout_toRightOf="@+id/img_pw"
-            android:background="@color/blue"/>
+            android:background="@color/blue" />
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -145,18 +147,20 @@
             android:textSize="@dimen/text_size_normal" />
 
     </LinearLayout>
+
     <Button
         android:id="@+id/btn_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_marginLeft="@dimen/margin_large"
-        android:layout_marginRight="@dimen/margin_large"
         android:layout_marginTop="@dimen/margin_huge"
-        android:paddingBottom="@dimen/margin_small"
-        android:paddingTop="@dimen/margin_small"
-        android:text="@string/login"
+        android:layout_marginRight="@dimen/margin_large"
         android:background="@drawable/btn_blue_selector"
+        android:paddingTop="@dimen/margin_small"
+        android:paddingBottom="@dimen/margin_small"
+        android:text="@string/login"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size_normal"/>
+        android:textSize="@dimen/text_size_normal" />
 
 </LinearLayout>

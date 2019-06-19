@@ -24,6 +24,7 @@ import com.example.myapplication12.R;
 import com.example.myapplication12.bean.User;
 import com.example.myapplication12.controller.LoadingController;
 import com.example.myapplication12.function.camera.TakePhotoActivity;
+import com.example.myapplication12.function.display.FileBrowseActivity;
 import com.example.myapplication12.function.display.FilePickerActivity;
 import com.example.myapplication12.tool.DialogUtil;
 import com.example.myapplication12.tool.FileUtil;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity
 
     private TextView lastLoginTextView;
 
-    private TextView takenPhotosTextView;
+    public static TextView takenAmountsTextView;
 
     private TextView usernameNavTextView;
 
@@ -59,13 +60,15 @@ public class MainActivity extends AppCompatActivity
 
     private Dialog logoutDialog;
 
-    private User user;
+    public static User loginUser;
 
     private Timer timer;
 
     private TimerTask timerTask;
 
-    private static int secondsCount = 0;
+    public static int secondsCount = 0;
+
+    public static int takenAmounts = 0;
 
     private SimpleDateFormat sdf;
 
@@ -74,12 +77,12 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        user = (User) getIntent().getSerializableExtra("user");
+        loginUser = (User) getIntent().getSerializableExtra("user");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,10 +118,10 @@ public class MainActivity extends AppCompatActivity
         accountTextView = findViewById(R.id.account_textview);
         loginDurationTextView = findViewById(R.id.login_duration_textview);
         lastLoginTextView = findViewById(R.id.last_login_textview);
-        takenPhotosTextView = findViewById(R.id.taken_photos_amounts_textview);
-        if(navigationView.getHeaderCount()>0){//防止重复
-            nav_header=navigationView.getHeaderView(0);
-            usernameNavTextView=nav_header.findViewById(R.id.username_nav_textview);
+        takenAmountsTextView = findViewById(R.id.taken_photos_amounts_textview);
+        if (navigationView.getHeaderCount() > 0) {//防止重复
+            nav_header = navigationView.getHeaderView(0);
+            usernameNavTextView = nav_header.findViewById(R.id.username_nav_textview);
             emailTextView = nav_header.findViewById(R.id.email_nav_textview);
         }
         logoutBtn = findViewById(R.id.logout_btn);
@@ -131,10 +134,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showUserInfo() {
-        usernameTextView.setText(user.getUsername());
-        accountTextView.setText(user.getAccount());
-        usernameNavTextView.setText(user.getUsername());
-        emailTextView.setText(user.getEmail());
+        usernameTextView.setText(loginUser.getUsername());
+        accountTextView.setText(loginUser.getAccount());
+        usernameNavTextView.setText(loginUser.getUsername());
+        emailTextView.setText(loginUser.getEmail());
     }
 
     private String getTime() {
@@ -161,7 +164,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -197,7 +200,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_gallery) {
             navGallerySelected();
         } else if (id == R.id.nav_slideshow) {
-            Toast.makeText(this, "此功能尚未开放~", Toast.LENGTH_SHORT).show();//
+            navSearchSelected();
         } else if (id == R.id.nav_manage) {
             Toast.makeText(this, "此功能尚未开放~", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_share) {
@@ -254,6 +257,10 @@ public class MainActivity extends AppCompatActivity
 
     private void navGallerySelected() {
         IntentUtil.sendIntent(MainActivity.this, FilePickerActivity.class);
+    }
+
+    private void navSearchSelected() {
+        IntentUtil.sendIntent(MainActivity.this,FileBrowseActivity.class);
     }
 
 }

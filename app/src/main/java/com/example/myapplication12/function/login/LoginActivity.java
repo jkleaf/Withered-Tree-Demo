@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.myapplication12.R;
 import com.example.myapplication12.bean.User;
 import com.example.myapplication12.main.MainActivity;
+import com.example.myapplication12.tool.Content;
 import com.example.myapplication12.tool.DialogUtil;
 import com.example.myapplication12.tool.HttpStatus;
 import com.example.myapplication12.tool.IntentUtil;
@@ -30,9 +31,6 @@ import okhttp3.RequestBody;
 import static com.example.myapplication12.tool.Content.SERVER_URL;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
 
     private String postJson;
 
@@ -128,7 +126,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void run() {
                 postJson=createLoginJSON(getAccount(),getPassword());
-                RequestBody body = RequestBody.create(JSON, postJson);
+                RequestBody body = RequestBody.create(Content.JSON, postJson);
 
                 status = new OkHttpUtil(POST_LOGIN_PARAMS_URL).doPost(body);
                 returnJson=status.getResponseAns();
@@ -149,7 +147,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if(canReachable){
             parseLoginJson(returnJson);
         }else{
-            Toast.makeText(LoginActivity.this, "服务器异常暂时无法访问！ " + status.getStatus(), Toast.LENGTH_SHORT).show();//
+            Toast.makeText(LoginActivity.this, "服务器异常暂时无法访问！", Toast.LENGTH_SHORT).show();//
         }
     }
 

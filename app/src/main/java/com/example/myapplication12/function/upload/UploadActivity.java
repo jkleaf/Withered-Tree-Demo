@@ -19,6 +19,8 @@ import com.example.myapplication12.R;
 import com.example.myapplication12.bean.TreeImage;
 import com.example.myapplication12.controller.LoadingController;
 import com.example.myapplication12.function.display.FilePickerActivity;
+import com.example.myapplication12.main.MainActivity;
+import com.example.myapplication12.tool.Content;
 import com.example.myapplication12.tool.FileUtil;
 import com.example.myapplication12.tool.HttpStatus;
 import com.example.myapplication12.tool.NetWorkUtil;
@@ -27,6 +29,10 @@ import com.zx.uploadlibrary.listener.ProgressListener;
 import com.zx.uploadlibrary.listener.impl.UIProgressListener;
 import com.zx.uploadlibrary.utils.OKHttpUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,6 +40,8 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.myapplication12.tool.Content.SERVER_URL;
@@ -58,6 +66,12 @@ public class UploadActivity extends AppCompatActivity {
     private HttpStatus status;
 
     private boolean canUpload;
+
+    private List<TreeImage> treeImages;
+
+    private List<String> imgFilesPathNames;
+
+    private String postJson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,11 +147,16 @@ public class UploadActivity extends AppCompatActivity {
             Toast.makeText(this, "当前设备网络不可用~", Toast.LENGTH_LONG).show();
         } else {
 //            new LoadingController(this).execute(Integer.valueOf(0));
+            imgFilesPathNames=initUploadFile();
             Thread checkStatusThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    status = new OkHttpUtil(SERVER_URL).doGet();
-                    Log.i("TAG-GetResponse_Answer:", status.getStatus() + " " + status.getResponseAns());
+//                    status = new OkHttpUtil(SERVER_URL).doGet();
+                    postJson = createTreeImagesJson();
+                    Log.i("TAG-postJson",postJson);
+                    RequestBody body = RequestBody.create(Content.JSON, postJson);
+                    status = new OkHttpUtil(POST_FILE_URL).doPost(body);
+                    Log.i("TAG-GetResponse_Answer", status.getStatus() + " " + status.getResponseAns());
                     if (status.getStatus() == 200) {
                         canUpload = true;
                     } else {
@@ -154,7 +173,7 @@ public class UploadActivity extends AppCompatActivity {
 //                synchronized (Thread.currentThread()){
 //                    Thread.currentThread().wait();
 //                }
-                Log.i("TAG",String.valueOf(canUpload));
+                Log.i("TAG", String.valueOf(canUpload));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -210,7 +229,7 @@ public class UploadActivity extends AppCompatActivity {
         };
 
         //POST
-        OKHttpUtils.doPostRequest(POST_FILE_URL, initUploadFile(), uiProgressRequestListener, new Callback() {
+        OKHttpUtils.doPostRequest(POST_FILE_URL, imgFilesPathNames, uiProgressRequestListener, new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
                 Log.i("TAG", "error------> " + e.getMessage());
@@ -232,11 +251,50 @@ public class UploadActivity extends AppCompatActivity {
 
     private List<String> initUploadFile() {
         List<String> filesPathNames = new ArrayList<>();
+        treeImages = new ArrayList<>();
         for (String fileName : filesList) {
-            filesPathNames.add(PHOTO_DIR_PATH + File.separator + fileName);
+            String photoPath = PHOTO_DIR_PATH + File.separator + fileName;
+            filesPathNames.add(photoPath);
+            TreeImage treeImage = new TreeImage();
+            treeImage.setId(handleId(fileName));
+            treeImage.setName(fileName);
+            //longitude
+            //latitude
+            treeImage.setU_account(MainActivity.loginUser.getAccount());
+            treeImage.setRecord_date(handleDate(fileName));
 //            Log.i("---------initUploadFile----------", PHOTO_DIR_PATH + File.separator + fileName);
+            treeImages.add(treeImage);
         }
         return filesPathNames;
+    }
+
+    private String handleId(String fileName) {//PNG_20190617_225758_treeImg.png
+        return handleDate(fileName) + fileName.substring(13, 19);
+    }
+
+    private String handleDate(String fileName) {
+        return fileName.substring(4, 12);
+    }
+
+    private String createTreeImagesJson() {
+        JSONArray jsonArray = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            for (TreeImage treeImage : treeImages) {
+                JSONObject tmpJsonObject = new JSONObject();
+                tmpJsonObject.put("id", treeImage.getId());
+                tmpJsonObject.put("name",treeImage.getName());
+//                tmpJsonObject.put("longitude", treeImage.getLongitude());
+//                tmpJsonObject.put("latitude", treeImage.getLatitude());
+                tmpJsonObject.put("u_account", treeImage.getU_account());
+                tmpJsonObject.put("record_date", treeImage.getRecord_date());
+                jsonArray.put(tmpJsonObject);
+            }
+            jsonObject.put("treeImages", jsonArray.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString().replace("\\","").replace("\"[","[").replace("]\"","]");
     }
 
 }

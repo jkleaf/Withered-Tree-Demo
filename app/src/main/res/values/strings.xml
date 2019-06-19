@@ -31,4 +31,5 @@
     <string name="oh_empty">OH!!!!!!Empty!!!</string>
     <string name="file_picker">查看本地照片</string>
     <string name="file_manager">打开文件管理器</string>
+    <string name="title_activity_display_photo">DisplayPhotoActivity</string>
 </resources>
