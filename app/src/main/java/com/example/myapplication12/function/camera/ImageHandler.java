@@ -133,7 +133,7 @@ public class ImageHandler {
         r = (p >> 16) & 0xff;
         g = (p >> 8) & 0xff;
         b = p & 0xff;
-        Lng = Lng + "." + (r > 10 ? r.toString() : "0" + r.toString()) + (g > 10 ? g.toString() : "0" + g.toString()) + (b > 10 ? b.toString() : "0" + b.toString());
+        Lng = Lng + "." + (r >= 10 ? r.toString() : "0" + r.toString()) + (g > 10 ? g.toString() : "0" + g.toString()) + (b > 10 ? b.toString() : "0" + b.toString());
         return Lng;
     }
 
@@ -154,7 +154,7 @@ public class ImageHandler {
         r = (p >> 16) & 0xff;
         g = (p >> 8) & 0xff;
         b = p & 0xff;
-        Lat = Lat + "." + (r > 10 ? r.toString() : "0" + r.toString()) + (g > 10 ? g.toString() : "0" + g.toString()) + (b > 10 ? b.toString() : "0" + b.toString());
+        Lat = Lat + "." + (r >= 10 ? r.toString() : "0" + r.toString()) + (g > 10 ? g.toString() : "0" + g.toString()) + (b > 10 ? b.toString() : "0" + b.toString());
         return Lat;
     }
 

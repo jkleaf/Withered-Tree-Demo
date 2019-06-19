@@ -126,7 +126,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void run() {
                 postJson=createLoginJSON(getAccount(),getPassword());
-                RequestBody body = RequestBody.create(Content.JSON, postJson);
+                RequestBody body = RequestBody.create(Content.JSON_HEADER, postJson);
 
                 status = new OkHttpUtil(POST_LOGIN_PARAMS_URL).doPost(body);
                 returnJson=status.getResponseAns();

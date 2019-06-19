@@ -12,7 +12,7 @@ public class Content {
 
     public static final String SERVER_URL="https://jkleaf.ngrok.xiaomiqiu.cn/WitheredTreesDemo/";
 
-    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    public static final MediaType JSON_HEADER= MediaType.parse("application/json; charset=utf-8");
 
 }
 /***

@@ -28,6 +28,10 @@ public class OkHttpUtil {
         urlBuilder =HttpUrl.parse(urlString).newBuilder();
     }
 
+    public void setUrl(String url){
+        this.urlString+=url;
+    }
+
     public HttpStatus doGet(){
         Request request=new Request.Builder()
                 .url(urlBuilder.build())

@@ -177,7 +177,7 @@ public class FileBrowseActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void run() {
                 postJson = createDateJson(handleDateString(startDate), handleDateString(endDate));
-                RequestBody body = RequestBody.create(Content.JSON, postJson);
+                RequestBody body = RequestBody.create(Content.JSON_HEADER, postJson);
 
                 status = new OkHttpUtil(POST_DATE_URL).doPost(body);
                 returnJson = status.getResponseAns();

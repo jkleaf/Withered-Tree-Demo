@@ -40,7 +40,6 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
@@ -62,6 +61,8 @@ public class UploadActivity extends AppCompatActivity {
     private TextView uploadTxtView;
 
     private static final String POST_FILE_URL = SERVER_URL + "MultiUpload";
+
+    private static final String POST_TREE_IMGS_URL = SERVER_URL + "AddTreeImages";
 
     private HttpStatus status;
 
@@ -147,17 +148,17 @@ public class UploadActivity extends AppCompatActivity {
             Toast.makeText(this, "当前设备网络不可用~", Toast.LENGTH_LONG).show();
         } else {
 //            new LoadingController(this).execute(Integer.valueOf(0));
-            imgFilesPathNames=initUploadFile();
+            imgFilesPathNames = initUploadFile();
             Thread checkStatusThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-//                    status = new OkHttpUtil(SERVER_URL).doGet();
-                    postJson = createTreeImagesJson();
-                    Log.i("TAG-postJson",postJson);
-                    RequestBody body = RequestBody.create(Content.JSON, postJson);
-                    status = new OkHttpUtil(POST_FILE_URL).doPost(body);
+                    status = new OkHttpUtil(SERVER_URL).doGet();
                     Log.i("TAG-GetResponse_Answer", status.getStatus() + " " + status.getResponseAns());
                     if (status.getStatus() == 200) {
+                        postJson = createTreeImagesJson();
+                        Log.i("TAG-postJson", postJson);
+                        RequestBody body = RequestBody.create(Content.JSON_HEADER, postJson);
+                        new OkHttpUtil(POST_TREE_IMGS_URL).doPost(body);
                         canUpload = true;
                     } else {
                         canUpload = false;
@@ -283,8 +284,8 @@ public class UploadActivity extends AppCompatActivity {
             for (TreeImage treeImage : treeImages) {
                 JSONObject tmpJsonObject = new JSONObject();
                 tmpJsonObject.put("id", treeImage.getId());
-                tmpJsonObject.put("name",treeImage.getName());
-//                tmpJsonObject.put("longitude", treeImage.getLongitude());
+                tmpJsonObject.put("name", treeImage.getName());
+//                tmpJsonObject.put("longitude", treeImage.getLongitude());//服务器处理
 //                tmpJsonObject.put("latitude", treeImage.getLatitude());
                 tmpJsonObject.put("u_account", treeImage.getU_account());
                 tmpJsonObject.put("record_date", treeImage.getRecord_date());
@@ -294,7 +295,7 @@ public class UploadActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return jsonObject.toString().replace("\\","").replace("\"[","[").replace("]\"","]");
+        return jsonObject.toString().replace("\\", "").replace("\"[", "[").replace("]\"", "]");
     }
 
 }
