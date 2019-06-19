@@ -18,6 +18,7 @@ public class DisplayPhotoActivity extends AppCompatActivity {
     private WebView webView;
 
     private TreeImage treeImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

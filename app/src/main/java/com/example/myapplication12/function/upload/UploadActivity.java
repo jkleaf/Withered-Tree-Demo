@@ -155,10 +155,6 @@ public class UploadActivity extends AppCompatActivity {
                     status = new OkHttpUtil(SERVER_URL).doGet();
                     Log.i("TAG-GetResponse_Answer", status.getStatus() + " " + status.getResponseAns());
                     if (status.getStatus() == 200) {
-                        postJson = createTreeImagesJson();
-                        Log.i("TAG-postJson", postJson);
-                        RequestBody body = RequestBody.create(Content.JSON_HEADER, postJson);
-                        new OkHttpUtil(POST_TREE_IMGS_URL).doPost(body);
                         canUpload = true;
                     } else {
                         canUpload = false;
@@ -184,6 +180,18 @@ public class UploadActivity extends AppCompatActivity {
                 Toast.makeText(UploadActivity.this, "无法上传~响应码：" + status.getStatus(), Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void postTreeImages(){
+        new Thread(){
+            @Override
+            public void run() {
+                postJson = createTreeImagesJson();
+                Log.i("TAG-postJson", postJson);
+                RequestBody body = RequestBody.create(Content.JSON_HEADER, postJson);
+                new OkHttpUtil(POST_TREE_IMGS_URL).doPost(body);
+            }
+        }.start();
     }
 
     private void showProgressLogs(long bytesWrite, long contentLength, boolean done) {
@@ -223,7 +231,7 @@ public class UploadActivity extends AppCompatActivity {
             public void onUIFinish(long bytesWrite, long contentLength, boolean done) {
                 super.onUIFinish(bytesWrite, contentLength, done);
 //                uploadProgressBar.setVisibility(View.GONE);
-                Toast.makeText(getApplicationContext(), "上传成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "本地文件已上传\n等待服务器响应...", Toast.LENGTH_LONG).show();
                 uploadProgressBar.setVisibility(View.INVISIBLE);
                 uploadTxtView.setVisibility(View.INVISIBLE);
             }
@@ -246,6 +254,10 @@ public class UploadActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Log.i("TAG", "success---->" + response.body().string());
+                postTreeImages();
+                Looper.prepare();
+                Toast.makeText(getApplicationContext(),"已上传至服务器！",Toast.LENGTH_SHORT).show();
+                Looper.loop();
             }
         });
     }
