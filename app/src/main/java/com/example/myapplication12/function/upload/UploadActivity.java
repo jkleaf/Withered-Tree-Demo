@@ -1,5 +1,7 @@
 package com.example.myapplication12.function.upload;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import com.example.myapplication12.R;
 import com.example.myapplication12.bean.TreeImage;
 import com.example.myapplication12.controller.LoadingController;
+import com.example.myapplication12.function.camera.ImageHandler;
 import com.example.myapplication12.function.display.FilePickerActivity;
 import com.example.myapplication12.main.MainActivity;
 import com.example.myapplication12.tool.Content;
@@ -156,6 +159,7 @@ public class UploadActivity extends AppCompatActivity {
                     Log.i("TAG-GetResponse_Answer", status.getStatus() + " " + status.getResponseAns());
                     if (status.getStatus() == 200) {
                         canUpload = true;
+                        postTreeImages();
                     } else {
                         canUpload = false;
 //                        Looper.prepare();
@@ -231,7 +235,7 @@ public class UploadActivity extends AppCompatActivity {
             public void onUIFinish(long bytesWrite, long contentLength, boolean done) {
                 super.onUIFinish(bytesWrite, contentLength, done);
 //                uploadProgressBar.setVisibility(View.GONE);
-                Toast.makeText(getApplicationContext(), "本地文件已上传\n等待服务器响应...", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "上传成功!", Toast.LENGTH_LONG).show();//本地文件已上传!等待服务器响应...
                 uploadProgressBar.setVisibility(View.INVISIBLE);
                 uploadTxtView.setVisibility(View.INVISIBLE);
             }
@@ -254,10 +258,10 @@ public class UploadActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Log.i("TAG", "success---->" + response.body().string());
-                postTreeImages();
-                Looper.prepare();
-                Toast.makeText(getApplicationContext(),"已上传至服务器！",Toast.LENGTH_SHORT).show();
-                Looper.loop();
+//                postTreeImages();
+//                Looper.prepare();
+//                Toast.makeText(getApplicationContext(),"已上传至服务器！",Toast.LENGTH_SHORT).show();
+//                Looper.loop();
             }
         });
     }
@@ -271,8 +275,11 @@ public class UploadActivity extends AppCompatActivity {
             TreeImage treeImage = new TreeImage();
             treeImage.setId(handleId(fileName));
             treeImage.setName(fileName);
+            Bitmap bitmap= BitmapFactory.decodeFile(photoPath);
             //longitude
+            treeImage.setLongitude(Double.valueOf(ImageHandler.getLng(bitmap)));
             //latitude
+            treeImage.setLatitude(Double.valueOf(ImageHandler.getLat(bitmap)));
             treeImage.setU_account(MainActivity.loginUser.getAccount());
             treeImage.setRecord_date(handleDate(fileName));
 //            Log.i("---------initUploadFile----------", PHOTO_DIR_PATH + File.separator + fileName);
@@ -297,8 +304,10 @@ public class UploadActivity extends AppCompatActivity {
                 JSONObject tmpJsonObject = new JSONObject();
                 tmpJsonObject.put("id", treeImage.getId());
                 tmpJsonObject.put("name", treeImage.getName());
-//                tmpJsonObject.put("longitude", treeImage.getLongitude());//服务器处理
-//                tmpJsonObject.put("latitude", treeImage.getLatitude());
+                //
+                tmpJsonObject.put("longitude", treeImage.getLongitude());//无需服务器处理
+                tmpJsonObject.put("latitude", treeImage.getLatitude());
+                //
                 tmpJsonObject.put("u_account", treeImage.getU_account());
                 tmpJsonObject.put("record_date", treeImage.getRecord_date());
                 jsonArray.put(tmpJsonObject);
