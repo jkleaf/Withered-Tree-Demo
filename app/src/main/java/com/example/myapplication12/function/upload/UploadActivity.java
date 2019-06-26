@@ -3,7 +3,6 @@ package com.example.myapplication12.function.upload;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,15 +18,15 @@ import android.widget.Toast;
 
 import com.example.myapplication12.R;
 import com.example.myapplication12.bean.TreeImage;
-import com.example.myapplication12.controller.LoadingController;
 import com.example.myapplication12.function.camera.ImageHandler;
 import com.example.myapplication12.function.display.FilePickerActivity;
 import com.example.myapplication12.main.MainActivity;
-import com.example.myapplication12.tool.Content;
+import com.example.myapplication12.tool.Constant;
 import com.example.myapplication12.tool.FileUtil;
 import com.example.myapplication12.tool.HttpStatus;
 import com.example.myapplication12.tool.NetWorkUtil;
 import com.example.myapplication12.tool.OkHttpUtil;
+import com.example.myapplication12.tool.ThreadUtil;
 import com.zx.uploadlibrary.listener.ProgressListener;
 import com.zx.uploadlibrary.listener.impl.UIProgressListener;
 import com.zx.uploadlibrary.utils.OKHttpUtils;
@@ -46,8 +45,8 @@ import okhttp3.Callback;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.myapplication12.tool.Content.SERVER_URL;
-import static com.example.myapplication12.tool.Content.TREEIMG;
+import static com.example.myapplication12.tool.Constant.SERVER_URL;
+import static com.example.myapplication12.tool.Constant.TREEIMG;
 
 public class UploadActivity extends AppCompatActivity {
 
@@ -155,7 +154,7 @@ public class UploadActivity extends AppCompatActivity {
             Thread checkStatusThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    status = new OkHttpUtil(SERVER_URL).doGet();
+                    status = new OkHttpUtil(SERVER_URL).Get();
                     Log.i("TAG-GetResponse_Answer", status.getStatus() + " " + status.getResponseAns());
                     if (status.getStatus() == 200) {
                         canUpload = true;
@@ -178,6 +177,16 @@ public class UploadActivity extends AppCompatActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+//            try {
+//                ThreadUtil threadUtil=new ThreadUtil(SERVER_URL);
+//                threadUtil.request(UploadActivity.class.getMethod("postTreeImages",null),UploadActivity.this)
+//                        .startThread().joinThread();
+//                canUpload=threadUtil.getCanReachable();
+//                status=threadUtil.getStatus();
+//                Toast.makeText(this,String.valueOf(canUpload),Toast.LENGTH_LONG).show();
+//            } catch (NoSuchMethodException e) {
+//                e.printStackTrace();
+//            }
             if (canUpload) {
                 upload();
             } else {
@@ -186,16 +195,9 @@ public class UploadActivity extends AppCompatActivity {
         }
     }
 
-    private void postTreeImages(){
-        new Thread(){
-            @Override
-            public void run() {
-                postJson = createTreeImagesJson();
-                Log.i("TAG-postJson", postJson);
-                RequestBody body = RequestBody.create(Content.JSON_HEADER, postJson);
-                new OkHttpUtil(POST_TREE_IMGS_URL).doPost(body);
-            }
-        }.start();
+    private void postTreeImages() {
+        postJson = createTreeImagesJson();
+        new ThreadUtil(POST_TREE_IMGS_URL).request(RequestBody.create(Constant.JSON_HEADER, postJson)).startThread();
     }
 
     private void showProgressLogs(long bytesWrite, long contentLength, boolean done) {
@@ -275,7 +277,7 @@ public class UploadActivity extends AppCompatActivity {
             TreeImage treeImage = new TreeImage();
             treeImage.setId(handleId(fileName));
             treeImage.setName(fileName);
-            Bitmap bitmap= BitmapFactory.decodeFile(photoPath);
+            Bitmap bitmap = BitmapFactory.decodeFile(photoPath);
             //longitude
             treeImage.setLongitude(Double.valueOf(ImageHandler.getLng(bitmap)));
             //latitude

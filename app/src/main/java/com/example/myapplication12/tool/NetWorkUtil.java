@@ -3,9 +3,6 @@ package com.example.myapplication12.tool;
 import android.content.Context;
 import android.net.ConnectivityManager;
 
-import java.io.IOException;
-import java.net.InetAddress;
-
 public class NetWorkUtil {
 
     public static boolean isNetworkConnected(Context context){

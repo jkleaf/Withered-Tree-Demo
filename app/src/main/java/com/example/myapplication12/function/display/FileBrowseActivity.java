@@ -20,11 +20,11 @@ import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.example.myapplication12.R;
 import com.example.myapplication12.bean.TreeImage;
-import com.example.myapplication12.tool.Content;
+import com.example.myapplication12.tool.Constant;
 import com.example.myapplication12.tool.HttpStatus;
-import com.example.myapplication12.tool.IntentUtil;
 import com.example.myapplication12.tool.NetWorkUtil;
 import com.example.myapplication12.tool.OkHttpUtil;
+import com.example.myapplication12.tool.ThreadUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +39,7 @@ import java.util.List;
 
 import okhttp3.RequestBody;
 
-import static com.example.myapplication12.tool.Content.SERVER_URL;
+import static com.example.myapplication12.tool.Constant.SERVER_URL;
 
 public class FileBrowseActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -173,28 +173,11 @@ public class FileBrowseActivity extends AppCompatActivity implements View.OnClic
             Toast.makeText(this, "设备的网络不可用~", Toast.LENGTH_SHORT).show();
             return;
         }
-        Thread checkStatusThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                postJson = createDateJson(handleDateString(startDate), handleDateString(endDate));
-                RequestBody body = RequestBody.create(Content.JSON_HEADER, postJson);
-
-                status = new OkHttpUtil(POST_DATE_URL).doPost(body);
-                returnJson = status.getResponseAns();
-                Log.i("TAG-search", status.getStatus() + " " + returnJson);
-                if (status.getStatus() == 200) {
-                    canReachable = true;
-                } else {
-                    canReachable = false;
-                }
-            }
-        });
-        checkStatusThread.start();
-        try {
-            checkStatusThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        postJson = createDateJson(handleDateString(startDate), handleDateString(endDate));
+        ThreadUtil threadUtil = new ThreadUtil(POST_DATE_URL);
+        threadUtil.request(RequestBody.create(Constant.JSON_HEADER, postJson)).startThread().joinThread();
+        canReachable = threadUtil.getCanReachable();
+        returnJson = threadUtil.getReturnJson();
         if (canReachable) {
             parseTreeImagesJson(returnJson);
         } else {

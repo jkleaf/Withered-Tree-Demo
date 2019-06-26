@@ -16,14 +16,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"><!--Android 9 HTTPS-->
         <activity
-            android:name=".function.display.DisplayPhotoActivity"
+            android:name="com.example.myapplication12.function.display.DisplayPhotoActivity"
             android:label="@string/title_activity_display_photo"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".function.display.QueryListActivity" />
+        <activity android:name="com.example.myapplication12.function.display.QueryListActivity" />
         <activity
-            android:name=".function.login.LoginActivity"
+            android:name="com.example.myapplication12.function.login.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,16 +34,16 @@
         </activity> <!-- <activity -->
         <!-- android:name=".function.login.LoginActivity" -->
         <!-- android:label="@string/title_activity_login" /> -->
-        <activity android:name=".function.display.FileBrowseActivity" />
+        <activity android:name="com.example.myapplication12.function.display.FileBrowseActivity" />
         <activity
-            android:name=".function.display.FilePickerActivity"
+            android:name="com.example.myapplication12.function.display.FilePickerActivity"
             android:label="@string/title_activity_filepicker" />
         <activity
-            android:name=".function.upload.UploadActivity"
+            android:name="com.example.myapplication12.function.upload.UploadActivity"
             android:label="@string/title_activity_upload"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".main.MainActivity"
+            android:name="com.example.myapplication12.main.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
 
@@ -54,7 +55,7 @@
             <!-- </intent-filter> -->
         </activity>
         <activity
-            android:name=".function.camera.TakePhotoActivity"
+            android:name="com.example.myapplication12.function.camera.TakePhotoActivity"
             android:label="@string/title_activity_takephoto" />
     </application>
 

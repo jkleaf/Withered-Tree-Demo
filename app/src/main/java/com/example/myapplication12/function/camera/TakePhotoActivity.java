@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -29,12 +28,10 @@ import com.example.myapplication12.tool.LocateUtil;
 import com.example.myapplication12.tool.PermissonUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 
-import static com.example.myapplication12.tool.Content.*;
+import static com.example.myapplication12.tool.Constant.*;
 
 public class TakePhotoActivity extends AppCompatActivity implements View.OnClickListener {
 

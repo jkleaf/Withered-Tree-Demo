@@ -15,19 +15,20 @@ import android.widget.Toast;
 import com.example.myapplication12.R;
 import com.example.myapplication12.bean.User;
 import com.example.myapplication12.main.MainActivity;
-import com.example.myapplication12.tool.Content;
+import com.example.myapplication12.tool.Constant;
 import com.example.myapplication12.tool.DialogUtil;
 import com.example.myapplication12.tool.HttpStatus;
 import com.example.myapplication12.tool.IntentUtil;
 import com.example.myapplication12.tool.NetWorkUtil;
 import com.example.myapplication12.tool.OkHttpUtil;
+import com.example.myapplication12.tool.ThreadUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import okhttp3.RequestBody;
 
-import static com.example.myapplication12.tool.Content.SERVER_URL;
+import static com.example.myapplication12.tool.Constant.SERVER_URL;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -67,20 +68,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initElements() {
-        login_btn=findViewById(R.id.btn_login);
-        account_editText=findViewById(R.id.et_account);
-        pwd_editText=findViewById(R.id.et_password);
-        pwd_see_imageView=findViewById(R.id.iv_see_password);
+        login_btn = findViewById(R.id.btn_login);
+        account_editText = findViewById(R.id.et_account);
+        pwd_editText = findViewById(R.id.et_password);
+        pwd_see_imageView = findViewById(R.id.iv_see_password);
     }
 
-    private void initClickListener(){
+    private void initClickListener() {
         login_btn.setOnClickListener(this);
         pwd_see_imageView.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_login:
                 login();
                 break;
@@ -98,78 +99,61 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return pwd_editText.getText().toString().trim();
     }
 
-    private void setPasswordVisibility(){
-        if(pwd_see_imageView.isSelected()){
+    private void setPasswordVisibility() {
+        if (pwd_see_imageView.isSelected()) {
             pwd_see_imageView.setSelected(false);
             pwd_editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }else{
+        } else {
             pwd_see_imageView.setSelected(true);
             pwd_editText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         }
     }
 
     private void login() {
-        if(!NetWorkUtil.isNetworkConnected(this)){
-            Toast.makeText(this,"设备的网络不可用~",Toast.LENGTH_SHORT).show();
+        if (!NetWorkUtil.isNetworkConnected(this)) {
+            Toast.makeText(this, "设备的网络不可用~", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(getAccount().isEmpty()){
-            Toast.makeText(this,"输入的账号不能为空!",Toast.LENGTH_SHORT).show();
+        if (getAccount().isEmpty()) {
+            Toast.makeText(this, "输入的账号不能为空!", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(getPassword().isEmpty()){
-            Toast.makeText(this,"输入的密码不能为空!",Toast.LENGTH_SHORT).show();
+        if (getPassword().isEmpty()) {
+            Toast.makeText(this, "输入的密码不能为空!", Toast.LENGTH_SHORT).show();
             return;
         }
-        Thread checkStatusThread=new Thread(new Runnable() {
-            @Override
-            public void run() {
-                postJson=createLoginJSON(getAccount(),getPassword());
-                RequestBody body = RequestBody.create(Content.JSON_HEADER, postJson);
-
-                status = new OkHttpUtil(POST_LOGIN_PARAMS_URL).doPost(body);
-                returnJson=status.getResponseAns();
-                Log.i("TAG-login",status.getStatus()+" "+returnJson);
-                if (status.getStatus() == 200) {
-                    canReachable=true;
-                } else {
-                    canReachable=false;
-                }
-            }
-        });
-        checkStatusThread.start();
-        try {
-            checkStatusThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if(canReachable){
+        postJson = createLoginJSON(getAccount(), getPassword());
+        ThreadUtil threadUtil = new ThreadUtil(POST_LOGIN_PARAMS_URL);
+        threadUtil.request(RequestBody.create(Constant.JSON_HEADER, postJson)).startThread().joinThread();
+        canReachable = threadUtil.getCanReachable();
+        returnJson = threadUtil.getReturnJson();
+        if (canReachable) {
             parseLoginJson(returnJson);
-        }else{
+        } else {
             Toast.makeText(LoginActivity.this, "服务器异常暂时无法访问！", Toast.LENGTH_SHORT).show();//
         }
     }
 
-    private void parseLoginJson(String json){
+    private void parseLoginJson(String json) {
         try {
-            JSONObject jsonObject=new JSONObject(json);
+            JSONObject jsonObject = new JSONObject(json);
 //            JSONObject dialogMsgJson=jsonObject.getJSONObject("message");
-            JSONObject userInfoJson=jsonObject.getJSONObject("user");
+            JSONObject userInfoJson = jsonObject.getJSONObject("user");
 //            String dialogMsg= (String) dialogMsgJson.get("message");
 //            Log.i("TAG-login-dialogMsg",dialogMsg);
-            if(!userInfoJson.toString().contains("{}")){
-                isLogin=true;
-                Log.i("TAG-login-userInfo",userInfoJson.toString());
-                String account=userInfoJson.getString("account");
-                String username=userInfoJson.getString("username");
-                String password=userInfoJson.getString("password");
-                String gender=userInfoJson.getString("gender");
-                String email=userInfoJson.getString("email");
-                String telephone=userInfoJson.getString("telephone");
-                user=new User(account,username,password,gender,email,telephone);
+            if (!userInfoJson.toString().contains("{}")) {
+                isLogin = true;
+                Log.i("TAG-login-userInfo", userInfoJson.toString());
+                String account = userInfoJson.getString("account");
+                String username = userInfoJson.getString("username");
+                String password = userInfoJson.getString("password");
+                String gender = userInfoJson.getString("gender");
+                String email = userInfoJson.getString("email");
+                String telephone = userInfoJson.getString("telephone");
+                user = new User(account, username, password, gender, email, telephone);
                 showMsgDialog("登陆成功!");
-            }else{
-                isLogin=false;
+            } else {
+                isLogin = false;
                 showMsgDialog("登录失败!用户名或密码错误!");
 //                Log.i("TAG-login",dialogMsg);
                 //
@@ -183,16 +167,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return "{\"account\":\"" + account + "\",\"" + "password\":\"" + password + "\"}";
     }
 
-    private void showMsgDialog(final String message){
-        loginMsgDialog= DialogUtil.showNormalDialog(this, "登录响应", message, "确定"
+    private void showMsgDialog(final String message) {
+        loginMsgDialog = DialogUtil.showNormalDialog(this, "登录响应", message, "确定"
                 , new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(message.contains("成功")){
-                            Bundle bundle=new Bundle();
-                            bundle.putSerializable("user",user);
-                            IntentUtil.sendIntent(LoginActivity.this, MainActivity.class,bundle);
-                        }else if(message.contains("失败")){
+                        if (message.contains("成功")) {
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("user", user);
+                            IntentUtil.sendIntent(LoginActivity.this, MainActivity.class, bundle);
+                        } else if (message.contains("失败")) {
                         }
                     }
                 }

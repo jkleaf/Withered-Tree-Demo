@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.example.myapplication12.tool.Content.DEMO;
-import static com.example.myapplication12.tool.Content.TREEIMG;
+import static com.example.myapplication12.tool.Constant.DEMO;
+import static com.example.myapplication12.tool.Constant.TREEIMG;
 
 public class FileUtil {
 
