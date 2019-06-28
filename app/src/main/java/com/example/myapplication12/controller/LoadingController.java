@@ -1,9 +1,13 @@
 package com.example.myapplication12.controller;
 
 import android.app.ProgressDialog;
+import android.content.ClipData;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.widget.Toast;
+
+import com.example.myapplication12.R;
 
 public class LoadingController extends AsyncTask<Integer, Integer, String> {
 

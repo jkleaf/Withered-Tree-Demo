@@ -1,18 +1,23 @@
 package com.example.myapplication12.bean;
 
+import android.os.Bundle;
+
+import com.example.myapplication12.function.map.route.WalkRouteActivity;
+import com.example.myapplication12.tool.IntentUtil;
+
 import java.io.Serializable;
 
 public class TreeImage implements Serializable {
 
-    private String id;
+    private String id;//编号
 
-    private String name;
+    private String name;//文件名
 
-    private Double longitude;
+    private Double longitude;//经度
 
-    private Double latitude;
+    private Double latitude;//纬度
 
-    private String u_account;
+    private String u_account;//拍摄者
 
     private String record_date;
 

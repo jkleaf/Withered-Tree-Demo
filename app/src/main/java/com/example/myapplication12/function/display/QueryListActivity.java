@@ -1,6 +1,7 @@
 package com.example.myapplication12.function.display;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -14,7 +15,7 @@ import com.example.myapplication12.tool.IntentUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.myapplication12.tool.Constant.SERVER_URL;
+import static com.example.myapplication12.tool.Content.SERVER_URL;
 
 public class QueryListActivity extends Activity implements AdapterView.OnItemClickListener {
 

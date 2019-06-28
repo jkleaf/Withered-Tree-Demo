@@ -32,7 +32,7 @@ public class OkHttpUtil {
         this.urlString+=url;
     }
 
-    public HttpStatus Get(){
+    public HttpStatus doGet(){
         Request request=new Request.Builder()
                 .url(urlBuilder.build())
                 .get()
@@ -46,7 +46,7 @@ public class OkHttpUtil {
         }
     }
 
-    public HttpStatus Post(RequestBody body){
+    public HttpStatus doPost(RequestBody body){
         Request request=new Request.Builder()
                 .url(urlBuilder.build())
                 .post(body)
