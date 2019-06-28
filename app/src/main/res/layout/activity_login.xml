@@ -4,22 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".function.login.LoginActivity"
-    android:orientation="vertical">
-<!--android:background="@mipmap/newsimg"-->
+    android:background="@mipmap/one"
+    android:orientation="vertical"
+    tools:context=".function.login.LoginActivity">
 
-    <!--<ImageView-->
-    <!--android:layout_width="@dimen/dp_100"-->
-    <!--android:layout_height="@dimen/dp_100"-->
-    <!--android:layout_marginTop="@dimen/dp_20"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:src="@mipmap/newsimg"-->
-    <!---->
-    <!--/>-->
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height_normal"
+        android:layout_width="349dp"
+        android:layout_height="215dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="@dimen/margin_large">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="334dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="枯木图片管理"
+            android:textSize="25dp" />
+
+    </RelativeLayout>
+    />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="54dp"
         android:layout_marginLeft="@dimen/margin_large"
         android:layout_marginTop="30dp"
         android:layout_marginRight="@dimen/margin_large">
@@ -40,8 +53,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/margin_normal"
-            android:layout_marginBottom="@dimen/margin_tiny"
+            android:layout_marginLeft="14dp"
+            android:layout_marginBottom="7dp"
             android:layout_toRightOf="@+id/img_account"
             android:background="@null"
             android:hint="@string/account"
@@ -60,8 +73,9 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
         android:layout_marginLeft="@dimen/margin_large"
         android:layout_marginRight="@dimen/margin_large">
 
@@ -71,7 +85,7 @@
             android:layout_height="20dp"
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="@dimen/margin_tiny"
-            android:layout_marginBottom="@dimen/margin_tiny"
+            android:layout_marginBottom="8dp"
             android:scaleType="fitXY"
             android:src="@mipmap/icon_login_pw" />
 
@@ -81,8 +95,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/margin_normal"
-            android:layout_marginBottom="@dimen/margin_tiny"
+            android:layout_marginLeft="11dp"
+            android:layout_marginBottom="10dp"
             android:layout_toRightOf="@+id/img_pw"
             android:background="@null"
             android:hint="@string/password"
@@ -110,17 +124,17 @@
             android:layout_toRightOf="@+id/img_pw"
             android:background="@color/blue" />
     </RelativeLayout>
+
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="346dp"
+        android:layout_height="71dp"
         android:layout_marginLeft="@dimen/margin_large"
-        android:layout_marginRight="@dimen/margin_large"
         android:layout_marginTop="@dimen/margin_small"
-        android:paddingBottom="@dimen/margin_small"
-        android:paddingTop="@dimen/margin_small"
-        android:orientation="horizontal"
+        android:layout_marginRight="@dimen/margin_large"
         android:gravity="center"
-        >
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/margin_small"
+        android:paddingBottom="@dimen/margin_small">
 
         <CheckBox
             android:id="@+id/checkBox_password"
@@ -150,17 +164,19 @@
 
     <Button
         android:id="@+id/btn_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="340dp"
+        android:layout_height="50dp"
         android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginLeft="@dimen/margin_large"
-        android:layout_marginTop="@dimen/margin_huge"
         android:layout_marginRight="@dimen/margin_large"
         android:background="@drawable/btn_blue_selector"
         android:paddingTop="@dimen/margin_small"
         android:paddingBottom="@dimen/margin_small"
         android:text="@string/login"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size_normal" />
+        android:textSize="@dimen/text_size_normal"
+        android:layout_gravity="center"/>
 
 </LinearLayout>

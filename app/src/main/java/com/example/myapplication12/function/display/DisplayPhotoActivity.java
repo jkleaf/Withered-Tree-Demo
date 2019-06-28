@@ -6,19 +6,23 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.myapplication12.R;
 import com.example.myapplication12.bean.TreeImage;
+import com.example.myapplication12.function.map.route.WalkRouteActivity;
+import com.example.myapplication12.tool.IntentUtil;
 
 public class DisplayPhotoActivity extends AppCompatActivity {
 
-    private WebView webView;
+    private ImageView imageView;
 
     private TreeImage treeImage;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,19 +39,37 @@ public class DisplayPhotoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "拍摄日期："+treeImage.getRecord_date()+"  拍摄者："+treeImage.getU_account()+
-                        "\n经度："+treeImage.getLongitude()+"  纬度："+treeImage.getLatitude()
+                                "\n经度："+treeImage.getLongitude()+"  纬度："+treeImage.getLatitude()
                         , Snackbar.LENGTH_LONG).show();
             }
         });
-        webView=findViewById(R.id.Windows);
-        webView.setWebViewClient(new WebViewClient(){
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return super.shouldOverrideUrlLoading(view, url);
-            }
-        });
-        webView.loadUrl(url);
+        imageView=findViewById(R.id.imageView2);
+        Glide.with(this).load(url).thumbnail(Glide.with(this).load(R.drawable.loading)).fitCenter().into(imageView);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_createroute,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.createrouteItem:
+            {
+                Bundle bundle=new Bundle();
+//                bundle.putString("endlocationLongtitude",treeImage.getLongitude().toString());
+//                bundle.putString("endlocationLatitude",treeImage.getLatitude().toString());
+                bundle.putSerializable("treeImage",treeImage);
+                IntentUtil.sendIntent(DisplayPhotoActivity.this,WalkRouteActivity.class,bundle);
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

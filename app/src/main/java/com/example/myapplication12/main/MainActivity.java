@@ -26,6 +26,7 @@ import com.example.myapplication12.controller.LoadingController;
 import com.example.myapplication12.function.camera.TakePhotoActivity;
 import com.example.myapplication12.function.display.FileBrowseActivity;
 import com.example.myapplication12.function.display.FilePickerActivity;
+import com.example.myapplication12.function.map.location.LocationActivity;
 import com.example.myapplication12.tool.DialogUtil;
 import com.example.myapplication12.tool.FileUtil;
 import com.example.myapplication12.tool.IntentUtil;
@@ -37,6 +38,7 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, View.OnLongClickListener {
+
 
     private View nav_header;
 
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "欢迎您使用枯死木管理系统！", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -202,7 +204,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
             navSearchSelected();
         } else if (id == R.id.nav_manage) {
-            Toast.makeText(this, "此功能尚未开放~", Toast.LENGTH_SHORT).show();
+            navManageLocation();
         } else if (id == R.id.nav_share) {
             Toast.makeText(this, "此功能尚未开放~", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_send) {
@@ -250,7 +252,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event){
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode==KeyEvent.KEYCODE_BACK)
             return true;
         return super.onKeyDown(keyCode, event);
@@ -269,5 +271,9 @@ public class MainActivity extends AppCompatActivity
     private void navSearchSelected() {
         IntentUtil.sendIntent(MainActivity.this,FileBrowseActivity.class);
     }
+    private void navManageLocation(){
+        IntentUtil.sendIntent(MainActivity.this, LocationActivity.class);
+    }
+
 
 }
